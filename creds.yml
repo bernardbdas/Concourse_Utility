@@ -1,0 +1,13 @@
+# REQUIRED
+GIT_URL: "https://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@github.com/Simplify3x/simplifyqa-connector.git"
+BRANCH_NAME: "main"
+
+# -------------------------------------- JAR ARGS --------------------------------------
+EXEC_TOKEN: "U2FsdGVkX1813b6a0iwM5OtlG8bLYMk5xbfIzDBSzgNzbDlMwSlZQTO5F4nNogApChZmjRpw6ldWF+6o3n3aGA==" # REQUIRED
+BUILD_API: "https://qa.simplifyqa.app/jenkinsSuiteExecution"
+STATUS_API: "https://qa.simplifyqa.app/getJenkinsExecStatus"
+KILL_API: "https://qa.simplifyqa.app/getsession/killExecutionReports"
+VERBOSE: "true"
+POLL_RATE: "null"
+THRESHOLD: "null"
+SLACK_WEBHOOK: "https://hooks.slack.com/services/"

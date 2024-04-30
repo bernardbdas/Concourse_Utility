@@ -1,0 +1,82 @@
+version: "3.8"
+
+services:
+  concourse-db-node:
+    container_name: concourse-db-node
+    image: postgres:latest
+    networks:
+      network-0:
+        aliases:
+          - concourse-db-node.service
+    user: root
+    restart: always
+    privileged: true
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: concourse
+      POSTGRES_PASSWORD: concourse_pass
+      POSTGRES_USER: concourse_user
+      PGDATA: /database
+
+  concourse-web-node-0:
+    container_name: concourse-web-node-0
+    image: concourse/concourse:latest
+    networks:
+      network-0:
+        aliases:
+          - concourse-web-node-0.service
+    user: root
+    restart: always
+    command: quickstart
+    privileged: true
+    depends_on:
+      - concourse-db-node
+    ports:
+      - 8078:8080
+    # volumes:
+    # - ./concourse-web-node-0:/concourse-web-node-0
+    environment:
+      CONCOURSE_POSTGRES_HOST: concourse-db-node.service
+      CONCOURSE_POSTGRES_PORT: 5432
+      CONCOURSE_POSTGRES_USER: concourse_user
+      CONCOURSE_POSTGRES_PASSWORD: concourse_pass
+      CONCOURSE_POSTGRES_DATABASE: concourse
+      CONCOURSE_EXTERNAL_URL: http://localhost:8078
+      CONCOURSE_ADD_LOCAL_USER: test:test,admin:admin,bernard:Password@321
+      CONCOURSE_MAIN_TEAM_LOCAL_USER: test,admin,bernard
+      # instead of relying on the default "detect"
+      CONCOURSE_WORKER_BAGGAGECLAIM_DRIVER: overlay
+      CONCOURSE_CLIENT_SECRET: Y29uY291cnNlLXdlYgo=
+      CONCOURSE_TSA_CLIENT_SECRET: Y29uY291cnNlLXdvcmtlcgo=
+      CONCOURSE_X_FRAME_OPTIONS: allow
+      CONCOURSE_CONTENT_SECURITY_POLICY: "*"
+      CONCOURSE_CLUSTER_NAME: tutorial
+      CONCOURSE_WORKER_CONTAINERD_DNS_SERVER: "8.8.8.8"
+      # For ARM-based machine, change the Concourse runtime to "houdini"
+      CONCOURSE_WORKER_RUNTIME: "containerd"
+
+  # concourse-worker-node-0:
+  #   container_name: concourse-worker-node-0
+  #   image: concourse/concourse:latest
+  #   networks:
+  #     network-0:
+  #       aliases:
+  #         - concourse-web-node-0.service
+  #   user: root
+  #   restart: always
+  #   command: quickstart
+  #   privileged: true
+  #   depends_on:
+  #     - concourse-db-node
+  #   ports:
+  #     - 8078:8080
+  #   # volumes:
+  #   # - ./concourse-web-node-0:/concourse-web-node-0
+  #   environment:
+
+networks:
+  network-0:
+    driver: bridge
